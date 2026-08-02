@@ -2,6 +2,10 @@
   "name": "@azurenightlock/raven",
   "version": "0.1.0",
   "description": "A JavaScript framework that compiles code directly to html/js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AzureNightlock-raven/raven.git"
+  },
   "type": "module",
   "bin": {
     "raven": "src/cli.js"

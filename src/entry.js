@@ -4,13 +4,13 @@ import { fileURLToPath } from "url";
 
 import { tokenize } from "./tokeniser.js";
 import { parse } from "./parser/parserMain.js";
-import { generate } from "./generator.js";
+import { generate } from "./generator/generator.js";
 import { reportAndExit } from "./errors.js";
 import { GLYPH, purple, deepPurple, red, green, bold, dim } from "./style.js";
 
 const root = path.dirname(fileURLToPath(import.meta.url));
 const cwd = process.cwd();
-const file = process.argv[3] ?? "page.rvn";
+const file = process.argv[3] ?? "src/page.rvn";
 const outputDir = path.join(cwd, "output");
 
 const version = (() => {

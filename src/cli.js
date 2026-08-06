@@ -3,6 +3,8 @@
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { generateSetup } from "./generator/generator.js";
+import { GLYPH, purple, deepPurple, red, green, bold, dim } from "./style.js";
 
 const useColor =
   process.stdout.isTTY &&
@@ -12,18 +14,12 @@ const useColor =
 const paint = (code) => (text) =>
   useColor ? `\x1b[${code}m${text}\x1b[0m` : text;
 
-const purple = paint("38;5;141");
-const deepPurple = paint("38;5;99");
-const red = paint("38;5;203");
-const bold = paint("1");
-const dim = paint("2");
-
 const currentDirectory = path.dirname(
   fileURLToPath(import.meta.url),
 );
 
 const command = process.argv[2];
-const commands = new Set(["compile", "format", "lint"]);
+const commands = new Set(["init","compile", "format", "lint"]);
 
 if (!commands.has(command)) {
   console.error(
@@ -34,23 +30,57 @@ if (!commands.has(command)) {
   );
 
   process.exit(1);
-}
-
-console.log(
-  `${purple("raven")} ${dim("›")} ${bold(deepPurple(command))}`,
-);
-
-const entryFile = path.join(currentDirectory, "entry.js");
-
-const result = spawnSync(process.execPath, [entryFile], {
-  stdio: "inherit",
-  cwd: process.cwd(),
-});
-
-if (result.status !== 0) {
-  console.error(
-    `${red(bold("✕ grounded"))} ${dim("compilation failed")}`,
+} else {
+  console.log(
+    `${purple("raven")} ${dim("›")} ${bold(deepPurple(command))}`,
   );
-}
+  if (command === "compile") {
+    const entryFile = path.join(currentDirectory, "entry.js");
 
-process.exit(result.status ?? 1);
+    // runs node entry.js from cwd of user
+    const result = spawnSync(process.execPath, [entryFile], {
+      stdio: "inherit",
+      cwd: process.cwd(),
+    });
+
+    if (result.error) {
+      console.error(
+        `${red(bold("Error"))} ${dim("could not start compiler")}`,
+      );
+      process.exit(1);
+    }
+
+    if (result.status !== 0) {
+      console.error(
+        `${red(bold("Error"))} ${dim("compilation failed")}`,
+      );
+    }
+
+    process.exit(result.status ?? 1);
+  }
+  else if (command === "init") {
+    try {
+      const result = generateSetup();
+      if (result.srcCreated && result.pageCreated) {
+        console.log(`${purple("✓")} ${bold("Created src directory")}`);
+        console.log(`${purple("✓")} ${bold("Created src/page.rvn")}`);
+      }
+      else if (!result.srcCreated && result.pageCreated) {
+        console.log(`${dim("•")} ${dim("src directory already exists")}`);
+        console.log(`${purple("✓")} ${bold("Created src/page.rvn")}`);
+      }
+      else {
+        console.log(`${dim("•")} ${dim("src directory already exists")}`);
+        console.log(`${dim("•")} ${dim("src/page.rvn already exists")}`);
+        console.log(`${purple("✓")} ${bold("Project is already set up")}`);
+      }
+    }
+    catch (error) {
+      console.error(
+        `${red(bold("✕ setup failed"))} ${dim(error.message)}`,
+      );
+
+      process.exit(1);
+    }
+  }
+}

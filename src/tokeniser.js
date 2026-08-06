@@ -1,7 +1,7 @@
 import fs from "fs";
 
 const KEYWORDS = new Set(["createElement", "as"]);
-const source = fs.readFileSync("page.rvn", "utf-8").replace(/\r\n?/g, "\n");
+const source = fs.readFileSync("src/page.rvn", "utf-8").replace(/\r\n?/g, "\n");
 const tokens = tokenize(source);
 
 function isLetter(char) {

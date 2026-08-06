@@ -11,8 +11,8 @@ const paint = (code) => (text) => (useColor ? `\x1b[${code}m${text}\x1b[0m` : te
 
 export const purple = paint("38;5;141");
 export const deepPurple = paint("38;5;99");
-export const red = paint("38;5;203");
-export const green = paint("38;5;77");
+export const red = paint("38;2;255;59;79");
+export const green = paint("38;2;74;222;128");
 export const bold = paint("1");
 export const dim = paint("2");
 

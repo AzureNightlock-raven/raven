@@ -33,6 +33,11 @@ A local installation will not make the `raven` command available everywhere on y
 
 ## Commands
 
+Initialise the project:
+```bash
+raven init
+```
+
 Compile the current Raven project:
 
 ```bash
